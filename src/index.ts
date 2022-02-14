@@ -2,10 +2,15 @@ let testTxt = document.createElement("p");
 testTxt.innerHTML = "how do";
 let body = document.getElementsByTagName("body")[0].appendChild(testTxt);
 
+interface Vec2 {
+    x: number,
+    y: number,
+};
 
-class Terminal {
 
-    private localPosition: {x: number, y: number};
+interface Terminal {
+    localPosition: Vec2,
+    potential: number,
 }
 
 
@@ -15,7 +20,9 @@ abstract class CircuitComponent {
         this.connections = [];
     }
 
-    abstract draw(canvas: HTMLCanvasElement): void;
+    public abstract draw(canvas: HTMLCanvasElement): void;
+
+    public abstract getTerminals(): Terminal[];
     
     public static connect(a: CircuitComponent, b: CircuitComponent) {
         a.connections.push(b);
@@ -26,9 +33,6 @@ abstract class CircuitComponent {
         return this.position;
     }
 
-    // public getTerminals(): Terminal[] {
-
-    // }
     
     private position: {x: number, y: number};
     protected connections: CircuitComponent[];
@@ -41,7 +45,7 @@ function connect(a: CircuitComponent, b: CircuitComponent) {
 
 
 
-class PotentialSource extends CircuitComponent {
+class VoltageSource extends CircuitComponent {
     constructor(position: {x: number, y: number}, potential: number) {
         super(position);
     }
@@ -51,7 +55,7 @@ class PotentialSource extends CircuitComponent {
         ctx.beginPath();
         ctx.arc(this.getPosition().x, 
             this.getPosition().y,
-            PotentialSource.drawSize, 
+            VoltageSource.drawSize, 
             0, 2 * Math.PI
         );
         ctx.stroke();
